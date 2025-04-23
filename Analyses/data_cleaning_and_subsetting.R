@@ -1,12 +1,16 @@
-## This script contains code to clean and subset the 
-## three core datasets: tree-ring data, precipitation data, 
-## and temperature data.
+## This script contains code to clean and subset the three core datasets;
+## tree-ring data, precipitation data, and temperature data. The following 
+## cleaned and subsetted versions are to be used in further analyses;
+## tree-ring data = avg_plot_growth, precipitation data = winter_ppt, 
+## and temperature data = summer_tmin.
 
-# load packages
+
+#### load necessary packages ####
 library("here")
 library("tidyverse")
 
-#### load tree-ring data ####
+#### clean & subset tree-ring data ####
+# load tree-ring dataset
 rwi_dat <- read.csv(here("Data/rwi_dat.csv"))
 
 # rename plot and data columns
@@ -53,7 +57,8 @@ avg_plot_growth_wide = as.data.frame(avg_plot_growth_wide, stringsAsFactors = FA
 avg_plot_growth_wide = map_df(avg_plot_growth_wide, as.numeric)
 avg_plot_growth_mx <- as.matrix(avg_plot_growth_wide)
 
-#### load precipitation data ####
+#### clean & subset precipitation data ####
+# load precipitation data
 ppt_dat <- read.csv(here("Data/ppt_dat.csv")) 
 
 # rename plot column
@@ -101,8 +106,8 @@ winter_ppt_wide = as.data.frame(winter_ppt_wide, stringsAsFactors = FALSE)
 winter_ppt_wide = map_df(winter_ppt_wide, as.numeric)
 winter_ppt_mx <- as.matrix(winter_ppt_wide)
 
-
-#### load temperature data ####
+#### clean & subset temperature data ####
+# load temperature data
 tmin_dat <- read.csv(here("Data/tmin_dat.csv")) 
 
 # rename plot column
@@ -140,14 +145,7 @@ summer_tmin_wide <- summer_tmin_wide[, c(2:120)] # time series 1900 -2018
 # convert character matrix to numeric
 summer_tmin_wide = as.data.frame(summer_tmin_wide, stringsAsFactors = FALSE)
 summer_tmin_wide = map_df(summer_tmin_wide, as.numeric)
-summer_tmin_mx <- as.matrix(summer_tmin_wide)
-
-## The following cleaned and subsetted datasets 
-## are to be used in further analyses:
-## tree-ring data = avg_plot_growth,
-## precipitation data = winter_ppt,
-## temperature data = summer_tmin. 
-
+summer_tmin_mx <- as.matrix(summer_tmin_wide) 
 
 
 
