@@ -4,8 +4,7 @@
 ## tree-ring data = avg_plot_growth, precipitation data = winter_ppt, 
 ## and temperature data = summer_tmin.
 
-
-#### load necessary packages ####
+#load necessary packages
 library("here")
 library("tidyverse")
 
