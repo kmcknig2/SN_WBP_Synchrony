@@ -9,7 +9,7 @@
 library("here")
 library("tidyverse")
 
-#### clean & subset tree-ring data ####
+#### clean & subset growth data ####
 # load tree-ring dataset
 rwi_dat <- read.csv(here("Data/rwi_dat.csv"))
 
