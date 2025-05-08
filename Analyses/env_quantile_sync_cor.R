@@ -1,4 +1,4 @@
-## In this script, we quantify timescale specific data quartiles to correlate 
+## In this script, we quantify timescale specific environmental quartiles to correlate 
 ## with synchrony values across years and timescale bands. 
 
 # source timescale specific variables; timescale_specific_avg_ppt, timescale_specific_avg_tmin, timescale_specific_avg_rwi
@@ -389,7 +389,7 @@ ppt_quant_rwi_sync_plot <- ggplot(data = ppt_quant_rwi_sync_CIs, aes(x = quantil
         panel.grid.minor.x=element_blank(),
         panel.grid.major.x=element_blank()) 
 
-#### anova tests across quartiles ####
+#### corrected t.tests across quartiles ####
 # correction factor applied for 6 tests per band with 4 quantiles in each band
 corr_p_value <- (0.05/6)
 
