@@ -3,7 +3,7 @@
 
 # source timescale specific variables; timescale_specific_avg_ppt, timescale_specific_avg_tmin, timescale_specific_avg_rwi
 source(here::here("Analyses/timescale_specific_variables.R"))
-# source average synchrony data for each variable: final_avg_growth_sync, final_avg_ppt_sync, final_avg_tmin_sync
+# source average synchrony data for each variable: ppt_sync_long, tmin_sync_long, growth_sync_long
 source(here::here("Analyses/average_synchrony.R"))
 
 #### calculate average synchrony across full timeseries ####
@@ -388,3 +388,432 @@ ppt_quant_rwi_sync_plot <- ggplot(data = ppt_quant_rwi_sync_CIs, aes(x = quantil
         panel.grid.major.y=element_blank(),
         panel.grid.minor.x=element_blank(),
         panel.grid.major.x=element_blank()) 
+
+#### anova tests across quartiles ####
+# correction factor applied for 6 tests per band with 4 quantiles in each band
+corr_p_value <- (0.05/6)
+
+## precipitation synchrony across temperature quantiles ##
+# make sure quantile is a factor
+tmin_quant_ppt_sync$quantile <- factor(tmin_quant_ppt_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+# create an empty list to store the results for each band
+t.test_tmin_quant_ppt_sync_results <- list()
+
+# loop through each timescale band
+for (xx in 1:length(unique(tmin_quant_ppt_sync$band))) {
+  
+  current <- unique(tmin_quant_ppt_sync$band)[xx]
+  band_data <- tmin_quant_ppt_sync %>%
+    filter(band == current)
+  
+  # manually generate pairs in the desired order (1-2, 1-3, 1-4, etc.)
+  pairs <- list()
+  # specify the order of quartiles for pair generation (even if the factor levels are reversed)
+  quartile_order <- c("1", "2", "3", "4")
+  
+  for (i in 1:(length(quartile_order) - 1)) {
+    for (j in (i + 1):length(quartile_order)) {
+      pairs[[length(pairs) + 1]] <- c(quartile_order[i], quartile_order[j])
+    }
+  }
+  
+  # ensure the factor levels in the data are still set to 4, 3, 2, 1
+  band_data$quantile <- factor(band_data$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+  
+  # perform t-tests manually for each pair and extract statistics
+  results <- lapply(pairs, function(pair) {
+    # subset data for the current pair
+    subset_data <- subset(band_data, quantile %in% pair)
+    
+    # perform t-test
+    t_test <- t.test(avg_sync ~ quantile, data = subset_data)
+    
+    # calculate mean difference between the two groups
+    group_means <- aggregate(avg_sync ~ quantile, data = subset_data, mean)
+    mean_diff <- diff(group_means$avg_sync)
+    
+    # extract p-values, confidence intervals, and t-statistics
+    data.frame(
+      Band = current,
+      Group1 = pair[1],
+      Group2 = pair[2],
+      Mean_Difference = mean_diff,
+      P_Value = t_test$p.value,
+      Lower_CI = t_test$conf.int[1],
+      Upper_CI = t_test$conf.int[2],
+      T_Statistic = t_test$statistic,
+      DF = t_test$parameter
+    )
+  })
+  # combine the individual paired results into a data frame for the current band
+  band_results_df <- do.call(rbind, results)
+  
+  # apply Bonferroni adjustment for the current band
+  band_results_df$Adjusted_P_Value <- p.adjust(band_results_df$P_Value, method = "bonferroni")
+  
+  # combine the band-specific results
+  t.test_tmin_quant_ppt_sync_results [[current]] <- band_results_df
+}
+
+# combine results for all bands into a data frame
+t.test_tmin_quant_ppt_sync_results  <- do.call(rbind, t.test_tmin_quant_ppt_sync_results) %>%
+  mutate(significant = case_when(Adjusted_P_Value <= corr_p_value ~ "yes", 
+                                 Adjusted_P_Value > corr_p_value ~ "no"))
+# multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
+t.test_tmin_quant_ppt_sync_results$Mean_Difference <- t.test_tmin_quant_ppt_sync_results$Mean_Difference * -1
+
+
+## temperature synchrony across temperature quantiles ##
+# make sure quantile is a factor
+tmin_quant_tmin_sync$quantile <- factor(tmin_quant_tmin_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+# create an empty list to store the results for each band
+t.test_tmin_quant_tmin_sync_results <- list()
+
+# loop through each timescale band
+for (xx in 1:length(unique(tmin_quant_tmin_sync$band))) {
+  
+  current <- unique(tmin_quant_tmin_sync$band)[xx]
+  band_data <- tmin_quant_tmin_sync %>%
+    filter(band == current)
+  
+  # manually generate pairs in the desired order (1-2, 1-3, 1-4, etc.)
+  pairs <- list()
+  # specify the order of quartiles for pair generation (even if the factor levels are reversed)
+  quartile_order <- c("1", "2", "3", "4")
+  
+  for (i in 1:(length(quartile_order) - 1)) {
+    for (j in (i + 1):length(quartile_order)) {
+      pairs[[length(pairs) + 1]] <- c(quartile_order[i], quartile_order[j])
+    }
+  }
+  
+  # ensure the factor levels in the data are still set to 4, 3, 2, 1
+  band_data$quantile <- factor(band_data$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+  
+  # perform t-tests manually for each pair and extract statistics
+  results <- lapply(pairs, function(pair) {
+    # subset data for the current pair
+    subset_data <- subset(band_data, quantile %in% pair)
+    
+    # perform t-test
+    t_test <- t.test(avg_sync ~ quantile, data = subset_data)
+    
+    # calculate mean difference between the two groups
+    group_means <- aggregate(avg_sync ~ quantile, data = subset_data, mean)
+    mean_diff <- diff(group_means$avg_sync)
+    
+    # extract p-values, confidence intervals, and t-statistics
+    data.frame(
+      Band = current,
+      Group1 = pair[1],
+      Group2 = pair[2],
+      Mean_Difference = mean_diff,
+      P_Value = t_test$p.value,
+      Lower_CI = t_test$conf.int[1],
+      Upper_CI = t_test$conf.int[2],
+      T_Statistic = t_test$statistic,
+      DF = t_test$parameter
+    )
+  })
+  # combine the individual paired results into a data frame for the current band
+  band_results_df <- do.call(rbind, results)
+  
+  # apply Bonferroni adjustment for the current band
+  band_results_df$Adjusted_P_Value <- p.adjust(band_results_df$P_Value, method = "bonferroni")
+  
+  # combine the band-specific results
+  t.test_tmin_quant_tmin_sync_results [[current]] <- band_results_df
+}
+
+# combine results for all bands into a data frame
+t.test_tmin_quant_tmin_sync_results  <- do.call(rbind, t.test_tmin_quant_tmin_sync_results) %>%
+  mutate(significant = case_when(Adjusted_P_Value <= corr_p_value ~ "yes", 
+                                 Adjusted_P_Value > corr_p_value ~ "no"))
+# multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
+t.test_tmin_quant_tmin_sync_results$Mean_Difference <- t.test_tmin_quant_tmin_sync_results$Mean_Difference * -1
+
+
+## growth synchrony across temperature quantiles ##
+# make sure quantile is a factor
+tmin_quant_rwi_sync$quantile <- factor(tmin_quant_rwi_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+# create an empty list to store the results for each band
+t.test_tmin_quant_rwi_sync_results <- list()
+
+# loop through each timescale band
+for (xx in 1:length(unique(tmin_quant_rwi_sync$band))) {
+  
+  current <- unique(tmin_quant_rwi_sync$band)[xx]
+  band_data <- tmin_quant_rwi_sync %>%
+    filter(band == current)
+  
+  # manually generate pairs in the desired order (1-2, 1-3, 1-4, etc.)
+  pairs <- list()
+  # specify the order of quartiles for pair generation (even if the factor levels are reversed)
+  quartile_order <- c("1", "2", "3", "4")
+  
+  for (i in 1:(length(quartile_order) - 1)) {
+    for (j in (i + 1):length(quartile_order)) {
+      pairs[[length(pairs) + 1]] <- c(quartile_order[i], quartile_order[j])
+    }
+  }
+  
+  # ensure the factor levels in the data are still set to 4, 3, 2, 1
+  band_data$quantile <- factor(band_data$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+  
+  # perform t-tests manually for each pair and extract statistics
+  results <- lapply(pairs, function(pair) {
+    # subset data for the current pair
+    subset_data <- subset(band_data, quantile %in% pair)
+    
+    # perform t-test
+    t_test <- t.test(avg_sync ~ quantile, data = subset_data)
+    
+    # calculate mean difference between the two groups
+    group_means <- aggregate(avg_sync ~ quantile, data = subset_data, mean)
+    mean_diff <- diff(group_means$avg_sync)
+    
+    # extract p-values, confidence intervals, and t-statistics
+    data.frame(
+      Band = current,
+      Group1 = pair[1],
+      Group2 = pair[2],
+      Mean_Difference = mean_diff,
+      P_Value = t_test$p.value,
+      Lower_CI = t_test$conf.int[1],
+      Upper_CI = t_test$conf.int[2],
+      T_Statistic = t_test$statistic,
+      DF = t_test$parameter
+    )
+  })
+  # combine the individual paired results into a data frame for the current band
+  band_results_df <- do.call(rbind, results)
+  
+  # apply Bonferroni adjustment for the current band
+  band_results_df$Adjusted_P_Value <- p.adjust(band_results_df$P_Value, method = "bonferroni")
+  
+  # combine the band-specific results
+  t.test_tmin_quant_rwi_sync_results [[current]] <- band_results_df
+}
+
+# combine results for all bands into a data frame
+t.test_tmin_quant_rwi_sync_results  <- do.call(rbind, t.test_tmin_quant_rwi_sync_results) %>%
+  mutate(significant = case_when(Adjusted_P_Value <= corr_p_value ~ "yes", 
+                                 Adjusted_P_Value > corr_p_value ~ "no"))
+# multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
+t.test_tmin_quant_rwi_sync_results$Mean_Difference <- t.test_tmin_quant_rwi_sync_results$Mean_Difference * -1
+
+
+## temperature synchrony across temperature quantiles ##
+# make sure quantile is a factor
+tmin_quant_tmin_sync$quantile <- factor(tmin_quant_tmin_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+# create an empty list to store the results for each band
+t.test_tmin_quant_tmin_sync_results <- list()
+
+# loop through each timescale band
+for (xx in 1:length(unique(tmin_quant_tmin_sync$band))) {
+  
+  current <- unique(tmin_quant_tmin_sync$band)[xx]
+  band_data <- tmin_quant_tmin_sync %>%
+    filter(band == current)
+  
+  # manually generate pairs in the desired order (1-2, 1-3, 1-4, etc.)
+  pairs <- list()
+  # specify the order of quartiles for pair generation (even if the factor levels are reversed)
+  quartile_order <- c("1", "2", "3", "4")
+  
+  for (i in 1:(length(quartile_order) - 1)) {
+    for (j in (i + 1):length(quartile_order)) {
+      pairs[[length(pairs) + 1]] <- c(quartile_order[i], quartile_order[j])
+    }
+  }
+  
+  # ensure the factor levels in the data are still set to 4, 3, 2, 1
+  band_data$quantile <- factor(band_data$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+  
+  # perform t-tests manually for each pair and extract statistics
+  results <- lapply(pairs, function(pair) {
+    # subset data for the current pair
+    subset_data <- subset(band_data, quantile %in% pair)
+    
+    # perform t-test
+    t_test <- t.test(avg_sync ~ quantile, data = subset_data)
+    
+    # calculate mean difference between the two groups
+    group_means <- aggregate(avg_sync ~ quantile, data = subset_data, mean)
+    mean_diff <- diff(group_means$avg_sync)
+    
+    # extract p-values, confidence intervals, and t-statistics
+    data.frame(
+      Band = current,
+      Group1 = pair[1],
+      Group2 = pair[2],
+      Mean_Difference = mean_diff,
+      P_Value = t_test$p.value,
+      Lower_CI = t_test$conf.int[1],
+      Upper_CI = t_test$conf.int[2],
+      T_Statistic = t_test$statistic,
+      DF = t_test$parameter
+    )
+  })
+  # combine the individual paired results into a data frame for the current band
+  band_results_df <- do.call(rbind, results)
+  
+  # apply Bonferroni adjustment for the current band
+  band_results_df$Adjusted_P_Value <- p.adjust(band_results_df$P_Value, method = "bonferroni")
+  
+  # combine the band-specific results
+  t.test_tmin_quant_tmin_sync_results [[current]] <- band_results_df
+}
+
+# combine results for all bands into a data frame
+t.test_tmin_quant_tmin_sync_results  <- do.call(rbind, t.test_tmin_quant_tmin_sync_results) %>%
+  mutate(significant = case_when(Adjusted_P_Value <= corr_p_value ~ "yes", 
+                                 Adjusted_P_Value > corr_p_value ~ "no"))
+# multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
+t.test_tmin_quant_tmin_sync_results$Mean_Difference <- t.test_tmin_quant_tmin_sync_results$Mean_Difference * -1
+
+
+## temperature synchrony across precipitation quantiles ##
+# make sure quantile is a factor
+ppt_quant_tmin_sync$quantile <- factor(ppt_quant_tmin_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+# create an empty list to store the results for each band
+t.test_ppt_quant_tmin_sync_results <- list()
+
+# loop through each timescale band
+for (xx in 1:length(unique(ppt_quant_tmin_sync$band))) {
+  
+  current <- unique(ppt_quant_tmin_sync$band)[xx]
+  band_data <- ppt_quant_tmin_sync %>%
+    filter(band == current)
+  
+  # manually generate pairs in the desired order (1-2, 1-3, 1-4, etc.)
+  pairs <- list()
+  # specify the order of quartiles for pair generation (even if the factor levels are reversed)
+  quartile_order <- c("1", "2", "3", "4")
+  
+  for (i in 1:(length(quartile_order) - 1)) {
+    for (j in (i + 1):length(quartile_order)) {
+      pairs[[length(pairs) + 1]] <- c(quartile_order[i], quartile_order[j])
+    }
+  }
+  
+  # ensure the factor levels in the data are still set to 4, 3, 2, 1
+  band_data$quantile <- factor(band_data$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+  
+  # perform t-tests manually for each pair and extract statistics
+  results <- lapply(pairs, function(pair) {
+    # subset data for the current pair
+    subset_data <- subset(band_data, quantile %in% pair)
+    
+    # perform t-test
+    t_test <- t.test(avg_sync ~ quantile, data = subset_data)
+    
+    # calculate mean difference between the two groups
+    group_means <- aggregate(avg_sync ~ quantile, data = subset_data, mean)
+    mean_diff <- diff(group_means$avg_sync)
+    
+    # extract p-values, confidence intervals, and t-statistics
+    data.frame(
+      Band = current,
+      Group1 = pair[1],
+      Group2 = pair[2],
+      Mean_Difference = mean_diff,
+      P_Value = t_test$p.value,
+      Lower_CI = t_test$conf.int[1],
+      Upper_CI = t_test$conf.int[2],
+      T_Statistic = t_test$statistic,
+      DF = t_test$parameter
+    )
+  })
+  # combine the individual paired results into a data frame for the current band
+  band_results_df <- do.call(rbind, results)
+  
+  # apply Bonferroni adjustment for the current band
+  band_results_df$Adjusted_P_Value <- p.adjust(band_results_df$P_Value, method = "bonferroni")
+  
+  # combine the band-specific results
+  t.test_ppt_quant_tmin_sync_results [[current]] <- band_results_df
+}
+
+# combine results for all bands into a data frame
+t.test_ppt_quant_tmin_sync_results  <- do.call(rbind, t.test_ppt_quant_tmin_sync_results) %>%
+  mutate(significant = case_when(Adjusted_P_Value <= corr_p_value ~ "yes", 
+                                 Adjusted_P_Value > corr_p_value ~ "no"))
+# multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
+t.test_ppt_quant_tmin_sync_results$Mean_Difference <- t.test_ppt_quant_tmin_sync_results$Mean_Difference * -1
+
+
+## growth synchrony across precipitation quantiles ##
+# make sure quantile is a factor
+ppt_quant_rwi_sync$quantile <- factor(ppt_quant_rwi_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+# create an empty list to store the results for each band
+t.test_ppt_quant_rwi_sync_results <- list()
+
+# loop through each timescale band
+for (xx in 1:length(unique(ppt_quant_rwi_sync$band))) {
+  
+  current <- unique(ppt_quant_rwi_sync$band)[xx]
+  band_data <- ppt_quant_rwi_sync %>%
+    filter(band == current)
+  
+  # manually generate pairs in the desired order (1-2, 1-3, 1-4, etc.)
+  pairs <- list()
+  # specify the order of quartiles for pair generation (even if the factor levels are reversed)
+  quartile_order <- c("1", "2", "3", "4")
+  
+  for (i in 1:(length(quartile_order) - 1)) {
+    for (j in (i + 1):length(quartile_order)) {
+      pairs[[length(pairs) + 1]] <- c(quartile_order[i], quartile_order[j])
+    }
+  }
+  
+  # ensure the factor levels in the data are still set to 4, 3, 2, 1
+  band_data$quantile <- factor(band_data$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+  
+  # perform t-tests manually for each pair and extract statistics
+  results <- lapply(pairs, function(pair) {
+    # subset data for the current pair
+    subset_data <- subset(band_data, quantile %in% pair)
+    
+    # perform t-test
+    t_test <- t.test(avg_sync ~ quantile, data = subset_data)
+    
+    # calculate mean difference between the two groups
+    group_means <- aggregate(avg_sync ~ quantile, data = subset_data, mean)
+    mean_diff <- diff(group_means$avg_sync)
+    
+    # extract p-values, confidence intervals, and t-statistics
+    data.frame(
+      Band = current,
+      Group1 = pair[1],
+      Group2 = pair[2],
+      Mean_Difference = mean_diff,
+      P_Value = t_test$p.value,
+      Lower_CI = t_test$conf.int[1],
+      Upper_CI = t_test$conf.int[2],
+      T_Statistic = t_test$statistic,
+      DF = t_test$parameter
+    )
+  })
+  # combine the individual paired results into a data frame for the current band
+  band_results_df <- do.call(rbind, results)
+  
+  # apply Bonferroni adjustment for the current band
+  band_results_df$Adjusted_P_Value <- p.adjust(band_results_df$P_Value, method = "bonferroni")
+  
+  # combine the band-specific results
+  t.test_ppt_quant_rwi_sync_results [[current]] <- band_results_df
+}
+
+# combine results for all bands into a data frame
+t.test_ppt_quant_rwi_sync_results  <- do.call(rbind, t.test_ppt_quant_rwi_sync_results) %>%
+  mutate(significant = case_when(Adjusted_P_Value <= corr_p_value ~ "yes", 
+                                 Adjusted_P_Value > corr_p_value ~ "no"))
+# multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
+t.test_ppt_quant_rwi_sync_results$Mean_Difference <- t.test_ppt_quant_rwi_sync_results$Mean_Difference * -1
+
+
+
+
+
+
