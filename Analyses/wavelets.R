@@ -68,7 +68,7 @@ plotmag.tts(res_tmin_wmf)
 axis(1, at = seq(1900, 2020, by = 20), labels = seq(1900, 2020, by = 20))
 axis(2, at = log2(c(3, 10, 20, 30)), labels = c("3", "10", "20", "30"), las = 1)
 
-#### # plot precip and temp wmf using a global range for consistent synchrony color scale ####
+#### plot precipitation and temperature wmfs using a global range for consistent synchrony color scale ####
 wav1 <- Mod(get_values(res_ppt_wmf))
 wav2 <- Mod(get_values(res_tmin_wmf))
 global_range <- range(c(wav1, wav2), na.rm = TRUE)
