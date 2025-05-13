@@ -130,7 +130,19 @@ tmin_quant_ppt_sync_plot <- ggplot(data = tmin_quant_ppt_sync_CIs, aes(x = quant
   geom_errorbar(aes(ymin = lower.ci.ppt.sync, ymax = upper.ci.ppt.sync, x = quantile, y=mean.ppt.sync, width = 0.2)) +
   theme_bw()+
   #ylim(0.0, 2.0) +
-  scale_color_brewer(name = "Timescale Band", palette="RdYlBu", direction = -1, labels = c("Biennial (2-3 yrs)","Multiannual (3-10 yrs)", "Decadal (10-20 yrs)", "Multidecadal (20-30 yrs)"))+
+  scale_color_manual(name = "Timscale Band",
+    values = c(
+      "multidecadal" = "#EE5A36",
+      "decadal" = "#F5AB54",
+      "multiannual" = "#9FC4E8",
+      "biennial" = "darkslateblue"
+    ),
+    labels = c(
+      "biennial" = "Biennial (2-3 yrs)",
+      "multiannual" = "Multiannual (3-10 yrs)",
+      "decadal" = "Decadal (10-20 yrs)",
+      "multidecadal" = "Multidecadal (20-30 yrs)"
+    )) +
   ylab("Average Precipitation Synchrony")+
   xlab("Temperature Quartiles")+
   theme(axis.text.x = element_text(color = "grey20", size = 12,
@@ -156,8 +168,19 @@ tmin_quant_tmin_sync_plot <- ggplot(data = tmin_quant_tmin_sync_CIs, aes(x = qua
   geom_line(linewidth = 1.5)+
   geom_errorbar(aes(ymin = lower.ci.tmin.sync, ymax = upper.ci.tmin.sync, x = quantile, y=mean.tmin.sync, width = 0.2)) +
   theme_bw()+
-  #ylim(0.0, 2.0) +
-  scale_color_brewer(name = "Timescale Band", palette="RdYlBu", direction = -1, labels = c("Biennial (2-3 yrs)","Multiannual (3-10 yrs)", "Decadal (10-20 yrs)", "Multidecadal (20-30 yrs)"))+
+  scale_color_manual(name = "Timscale Band",
+                     values = c(
+                       "multidecadal" = "#EE5A36",
+                       "decadal" = "#F5AB54",
+                       "multiannual" = "#9FC4E8",
+                       "biennial" = "darkslateblue"
+                     ),
+                     labels = c(
+                       "biennial" = "Biennial (2-3 yrs)",
+                       "multiannual" = "Multiannual (3-10 yrs)",
+                       "decadal" = "Decadal (10-20 yrs)",
+                       "multidecadal" = "Multidecadal (20-30 yrs)"
+                     )) +
   ylab("Average Temperature Synchrony")+
   xlab("Temperature Quartiles")+
   theme(axis.text.x = element_text(color = "grey20", size = 12,
@@ -183,8 +206,19 @@ tmin_quant_rwi_sync_plot <- ggplot(data = tmin_quant_rwi_sync_CIs, aes(x = quant
   geom_line(linewidth = 1.5)+
   geom_errorbar(aes(ymin = lower.ci.rwi.sync, ymax = upper.ci.rwi.sync, x = quantile, y=mean.rwi.sync, width = 0.2)) +
   theme_bw()+
-  #ylim(0.0, 2.0) +
-  scale_color_brewer(name = "Timescale Band", palette="RdYlBu", direction = -1, labels = c("Biennial (2-3 yrs)","Multiannual (3-10 yrs)", "Decadal (10-20 yrs)", "Multidecadal (20-30 yrs)"))+
+  scale_color_manual(name = "Timscale Band",
+                     values = c(
+                       "multidecadal" = "#EE5A36",
+                       "decadal" = "#F5AB54",
+                       "multiannual" = "#9FC4E8",
+                       "biennial" = "darkslateblue"
+                     ),
+                     labels = c(
+                       "biennial" = "Biennial (2-3 yrs)",
+                       "multiannual" = "Multiannual (3-10 yrs)",
+                       "decadal" = "Decadal (10-20 yrs)",
+                       "multidecadal" = "Multidecadal (20-30 yrs)"
+                     )) +
   ylab("Average Growth Synchrony")+
   xlab("Temperature Quartiles")+
   theme(axis.text.x = element_text(color = "grey20", size = 12,

@@ -163,9 +163,9 @@ avg_growth_sync_plot <- ggplot() +
   geom_ribbon(data = final_avg_growth_sync, aes(
     x = year,
     y = predicted,
+    alpha = 0.4,
     group = band,
     fill = band,
-    alpha = 0.4,
     ymin = conf.low,
     ymax = conf.high),
     show.legend = FALSE) +
