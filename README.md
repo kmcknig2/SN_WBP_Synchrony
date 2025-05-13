@@ -56,6 +56,6 @@ See below for additional detail.
     *plotmag_tts.R* - supporting script with modified wsyn function for plotting wmfs
     without fixed axes.
     
-    *psync_by_chance* - supporting script with function to calculate signficant synchrony 
+    *psync_by_chance.R* - supporting script with function to calculate signficant synchrony 
     depending on number of sites. 
 
