@@ -134,11 +134,11 @@ rwi.p.line <- rwi.p + geom_abline(intercept = rwi.coeff[1],
                                   slope = rwi.coeff[2])
 
 # fit a segmented regression to identify breakpoints in the trend,
-# using 1974 as an initial guess (segmented will still identify the correct breakpoint but needs an intitial input)
+# setting the number of breakpoints to estimate as 1
 rwi.seg <- segmented(rwi.lm,
                      seg.Z = ~ year,
-                     psi = list(year = c(1980)))
-
+                     npsi = list(year = 1))
+summary(rwi.seg)
 # extract the fitted values from the segmented model
 rwi.fitted <- fitted(rwi.seg)
 
@@ -175,11 +175,12 @@ ppt.p.line <- ppt.p + geom_abline(intercept = rwi.coeff[1],
                                   slope = rwi.coeff[2])
 
 # fit a segmented regression to identify breakpoints in the trend,
-# using 1974 as an initial guess (segmented will still identify the correct breakpoint but needs an intitial input)
+# setting the number of breakpoints to estimate as 1
 ppt.seg <- segmented(ppt.lm,
                      seg.Z = ~ wateryear,
-                     psi = list(wateryear = c(1980)))
+                     npsi = list(wateryear = 1))
 
+summary(ppt.seg)
 # extract the fitted values from the segmented model
 ppt.fitted <- fitted(ppt.seg)
 
@@ -215,11 +216,12 @@ tmin.p.line <- tmin.p + geom_abline(intercept = rwi.coeff[1],
                                   slope = rwi.coeff[2])
 
 # fit a segmented regression to identify breakpoints in the trend,
-# using 1974 as an initial guess (segmented will still identify the correct breakpoint but needs an intitial input)
+# setting the number of breakpoints to estimate as 1
 tmin.seg <- segmented(tmin.lm,
                      seg.Z = ~ year,
                      npsi = list(year = 1))
 
+summary(tmin.seg)
 # extract the fitted values from the segmented model
 tmin.fitted <- fitted(tmin.seg)
 
