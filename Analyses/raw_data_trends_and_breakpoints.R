@@ -137,7 +137,7 @@ rwi.p.line <- rwi.p + geom_abline(intercept = rwi.coeff[1],
 # using 1974 as an initial guess (segmented will still identify the correct breakpoint but needs an intitial input)
 rwi.seg <- segmented(rwi.lm,
                      seg.Z = ~ year,
-                     psi = list(year = c(1974)))
+                     psi = list(year = c(1980)))
 
 # extract the fitted values from the segmented model
 rwi.fitted <- fitted(rwi.seg)
@@ -178,7 +178,7 @@ ppt.p.line <- ppt.p + geom_abline(intercept = rwi.coeff[1],
 # using 1974 as an initial guess (segmented will still identify the correct breakpoint but needs an intitial input)
 ppt.seg <- segmented(ppt.lm,
                      seg.Z = ~ wateryear,
-                     psi = list(wateryear = c(1974)))
+                     psi = list(wateryear = c(1980)))
 
 # extract the fitted values from the segmented model
 ppt.fitted <- fitted(ppt.seg)
@@ -218,7 +218,7 @@ tmin.p.line <- tmin.p + geom_abline(intercept = rwi.coeff[1],
 # using 1974 as an initial guess (segmented will still identify the correct breakpoint but needs an intitial input)
 tmin.seg <- segmented(tmin.lm,
                      seg.Z = ~ year,
-                     psi = list(year = c(1974)))
+                     psi = list(year = c(1980)))
 
 # extract the fitted values from the segmented model
 tmin.fitted <- fitted(tmin.seg)
