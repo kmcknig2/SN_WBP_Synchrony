@@ -180,6 +180,7 @@ ppt.seg <- segmented(ppt.lm,
                      seg.Z = ~ wateryear,
                      npsi = list(wateryear = 1))
 
+
 summary(ppt.seg)
 # extract the fitted values from the segmented model
 ppt.fitted <- fitted(ppt.seg)
@@ -238,3 +239,4 @@ tmin.lines <- tmin.seg$psi[,2]
 tmin.p <- tmin.p + geom_vline(xintercept = tmin.lines, linetype = "dashed", color = "darkgrey") +
   labs(y = "average annual temperature")+
   theme_bw()
+
