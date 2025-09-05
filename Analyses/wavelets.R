@@ -11,7 +11,6 @@ source(here::here("Analyses/data_cleaning_and_subsetting.R"))
 source(here::here("Functions/psync_by_chance.R"))
 source(here::here("Functions/plotmag_tts.R"))
 
-dev.new(width = 10, height = 6)
 #### growth synchrony ####
 # standardize data for wmf and wpmf using cleandat function, clev = 5
 times <- 1900:2018

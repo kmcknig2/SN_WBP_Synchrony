@@ -427,7 +427,7 @@ ppt_quant_rwi_sync_plot <- ggplot(data = ppt_quant_rwi_sync_CIs, aes(x = quantil
 # correction factor applied for 6 tests per band with 4 quantiles in each band
 corr_p_value <- (0.05/6)
 
-## precipitation synchrony across temperature quantiles ##
+#### precipitation synchrony across temperature quantiles ####
 # make sure quantile is a factor
 tmin_quant_ppt_sync$quantile <- factor(tmin_quant_ppt_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
 # create an empty list to store the results for each band
@@ -497,7 +497,7 @@ t.test_tmin_quant_ppt_sync_results  <- do.call(rbind, t.test_tmin_quant_ppt_sync
 t.test_tmin_quant_ppt_sync_results$Mean_Difference <- t.test_tmin_quant_ppt_sync_results$Mean_Difference * -1
 
 
-## temperature synchrony across temperature quantiles ##
+#### temperature synchrony across temperature quantiles ####
 # make sure quantile is a factor
 tmin_quant_tmin_sync$quantile <- factor(tmin_quant_tmin_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
 # create an empty list to store the results for each band
@@ -567,7 +567,7 @@ t.test_tmin_quant_tmin_sync_results  <- do.call(rbind, t.test_tmin_quant_tmin_sy
 t.test_tmin_quant_tmin_sync_results$Mean_Difference <- t.test_tmin_quant_tmin_sync_results$Mean_Difference * -1
 
 
-## growth synchrony across temperature quantiles ##
+#### growth synchrony across temperature quantiles ####
 # make sure quantile is a factor
 tmin_quant_rwi_sync$quantile <- factor(tmin_quant_rwi_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
 # create an empty list to store the results for each band
@@ -637,7 +637,7 @@ t.test_tmin_quant_rwi_sync_results  <- do.call(rbind, t.test_tmin_quant_rwi_sync
 t.test_tmin_quant_rwi_sync_results$Mean_Difference <- t.test_tmin_quant_rwi_sync_results$Mean_Difference * -1
 
 
-## temperature synchrony across temperature quantiles ##
+#### temperature synchrony across temperature quantiles ####
 # make sure quantile is a factor
 tmin_quant_tmin_sync$quantile <- factor(tmin_quant_tmin_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
 # create an empty list to store the results for each band
@@ -707,7 +707,7 @@ t.test_tmin_quant_tmin_sync_results  <- do.call(rbind, t.test_tmin_quant_tmin_sy
 t.test_tmin_quant_tmin_sync_results$Mean_Difference <- t.test_tmin_quant_tmin_sync_results$Mean_Difference * -1
 
 
-## temperature synchrony across precipitation quantiles ##
+#### temperature synchrony across precipitation quantiles ####
 # make sure quantile is a factor
 ppt_quant_tmin_sync$quantile <- factor(ppt_quant_tmin_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
 # create an empty list to store the results for each band
@@ -777,7 +777,7 @@ t.test_ppt_quant_tmin_sync_results  <- do.call(rbind, t.test_ppt_quant_tmin_sync
 t.test_ppt_quant_tmin_sync_results$Mean_Difference <- t.test_ppt_quant_tmin_sync_results$Mean_Difference * -1
 
 
-## growth synchrony across precipitation quantiles ##
+#### growth synchrony across precipitation quantiles ####
 # make sure quantile is a factor
 ppt_quant_rwi_sync$quantile <- factor(ppt_quant_rwi_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
 # create an empty list to store the results for each band

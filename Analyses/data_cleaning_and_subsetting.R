@@ -14,7 +14,7 @@ rwi_dat <- read.csv(here("Data/rwi_dat.csv"))
 
 # rename plot and data columns
 rwi_dat <- rwi_dat %>%
-  select(year, plot_id_needle, tree_num, value) %>%
+  dplyr::select(year, plot_id_needle, tree_num, value) %>%
   rename(plot = "plot_id_needle", rwi = "value")
 
 # subset time series to 1900-2018, each row represents an individual tree's data
@@ -29,7 +29,7 @@ rwi_00s_tree_filtered<- rwi_00s[rowSums(is.na(rwi_00s))==0,]
 rwi_00s_plot_filtered <- rwi_00s_tree_filtered %>% 
   pivot_longer(3:121, names_to = "year", values_to = "rwi")%>%
   group_by(plot) %>%
-  mutate(num_trees = round(n()/118))%>% # divide by 118 years of data
+  mutate(num_trees = round(n()/118)) %>% # divide by 118 years of data
   filter(num_trees >= 5)
 
 # create a wide version of subsetted dataset
@@ -38,8 +38,8 @@ rwi_00s_plot_filtered_wide <- rwi_00s_plot_filtered %>%
 
 # calculate annual average growth per plot per year
 avg_plot_growth <- rwi_00s_plot_filtered %>%
-  filter(year >= 1900)%>%
-  group_by(plot, year)%>%
+  filter(year >= 1900) %>%
+  group_by(plot, year) %>%
   summarize(avg_growth = mean(rwi))
 
 # create a wide version of average growth dataset 
@@ -127,9 +127,9 @@ summer_tmin <- tmin_dat %>%
 
 # calculate average minimum temperature per plot per year
 summer_tmin <- summer_tmin %>%
-  group_by(plot, year)%>%
-  summarise(summer_tmin = mean(tmin))%>%
-  filter(year >= 1900)%>%
+  group_by(plot, year) %>%
+  summarise(summer_tmin = mean(tmin)) %>%
+  filter(year >= 1900) %>%
   filter(year <= 2018)
 
 # create wide version of average temp data

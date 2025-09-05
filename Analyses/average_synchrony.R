@@ -62,7 +62,7 @@ growth_band_coverage <- growth_ts_coverage %>%
 
 # recombine and filter full dataset to only include those complete time-band combos
 growth_sync_long <- growth_sync_long %>%
-  select(year, band, ts, values) %>%
+  dplyr::select(year, band, ts, values) %>%
   unite("uID", year, band, remove = FALSE)
 growth_filtered_timeseries <- growth_sync_long %>%
   filter(uID %in% growth_band_coverage$uID)
@@ -94,52 +94,58 @@ growth_b_aic <- AIC(growth_b_null_model, growth_b_linear_model, growth_b_quad_mo
 # repeat for multiannual band
 avg_growth_sync_multiannual <- avg_growth_sync%>%
   filter(band == "multiannual")
+
 growth_ma_null_model <- glmmTMB(avg_sync~1, data = avg_growth_sync_multiannual)
 growth_ma_linear_model <- glmmTMB(avg_sync ~ scaled_year, data= avg_growth_sync_multiannual)
 growth_ma_quad_model <- glmmTMB(avg_sync~ poly(scaled_year, 2, raw=TRUE), data= avg_growth_sync_multiannual)
+
 growth_ma_aic <- AIC(growth_ma_null_model, growth_ma_linear_model, growth_ma_quad_model)
 # quadratic model fit best
 
 # repeat for decadal band
 avg_growth_sync_decadal <- avg_growth_sync%>%
   filter(band == "decadal")
+
 growth_d_null_model <- glmmTMB(avg_sync~1, data = avg_growth_sync_decadal)
 growth_d_linear_model <- glmmTMB(avg_sync ~ scaled_year, data= avg_growth_sync_decadal)
 growth_d_quad_model <- glmmTMB(avg_sync~ poly(scaled_year, 2, raw=TRUE), data= avg_growth_sync_decadal)
+
 growth_d_aic <- AIC(growth_d_null_model, growth_d_linear_model, growth_d_quad_model)
 # quadratic model fit best
 
 # repeat for multidecadal band
 avg_growth_sync_multidecadal <- avg_growth_sync%>%
   filter(band == "multidecadal")
+
 growth_md_null_model <- glmmTMB(avg_sync~1, data = avg_growth_sync_multidecadal)
 growth_md_linear_model <- glmmTMB(avg_sync ~ scaled_year, data= avg_growth_sync_multidecadal)
 growth_md_quad_model <- glmmTMB(avg_sync~ poly(scaled_year, 2, raw=TRUE), data= avg_growth_sync_multidecadal)
+
 growth_md_aic <- AIC(growth_md_null_model, growth_md_linear_model, growth_md_quad_model)
 # quadratic model fit best
 
 # predict growth synchrony using quadratic models (best fit for all bands)
 growth_b_vis_prod <- ggpredict(growth_b_quad_model, 
                        terms = c("scaled_year[all]"), 
-                       type = "fe", 
+                       type = "fixed", 
                        ci_level = .95)
 growth_b_vis_prod$band <- "biennial"
 
 growth_ma_vis_prod <- ggpredict(growth_ma_quad_model, 
                        terms = c("scaled_year[all]"), 
-                       type = "fe", 
+                       type = "fixed", 
                        ci_level = .95)
 growth_ma_vis_prod$band <- "multiannual"
 
 growth_d_vis_prod <- ggpredict(growth_d_quad_model, 
                        terms = c("scaled_year[all]"), 
-                       type = "fe", 
+                       type = "fixed", 
                        ci_level = .95)
 growth_d_vis_prod$band <- "decadal"
 
 growth_md_vis_prod <- ggpredict(growth_md_quad_model, 
                        terms = c("scaled_year[all]"), 
-                       type = "fe", 
+                       type = "fixed", 
                        ci_level = .95)
 growth_md_vis_prod$band <- "multidecadal"
 
@@ -208,13 +214,15 @@ avg_growth_sync_plot <- ggplot() +
   ylab("Average Growth Synchrony") +
   xlab("Year")
 
+avg_growth_sync_plot
+
 # use emmeans to compare min and max years of growth synchrony data
 # extract the min and max years and corresponding scaled_year values for each band
 growth_extremes <- final_avg_growth_sync %>%
   group_by(band) %>%
   filter(year == max(year) | year == min(year)) %>%
   arrange(band, year) %>%
-  select(band, year, scaled_year)
+  dplyr::select(band, year, scaled_year)
 
 # create named list of best fit models per band (all quadratic)
 band_models <- list(
@@ -256,7 +264,7 @@ contrast_summary <- map_dfr(names(band_models), function(band_name) {
         TRUE ~ "no change"
       )
     ) %>%
-    select(band, year_min, year_max, estimate, std.error, statistic, p.value, direction)
+    dplyr::select(band, year_min, year_max, estimate, std.error, statistic, p.value, direction)
   
   return(contrast)
 })
@@ -303,7 +311,7 @@ ppt_band_coverage <- ppt_ts_coverage %>%
 
 # recombine and filter full dataset to only include those complete time-band combos
 ppt_sync_long <- ppt_sync_long %>%
-  select(year, band, ts, values) %>%
+  dplyr::select(year, band, ts, values) %>%
   unite("uID", year, band, remove = FALSE)
 ppt_filtered_timeseries <- ppt_sync_long %>%
   filter(uID %in% ppt_band_coverage$uID)
@@ -335,32 +343,39 @@ ppt_b_aic <- AIC(ppt_b_null_model, ppt_b_linear_model, ppt_b_quad_model)
 # repeat for multiannual band
 avg_ppt_sync_multiannual <- avg_ppt_sync %>%
   filter(band == "multiannual")
+
 ppt_ma_null_model <- glmmTMB(avg_sync~1, data = avg_ppt_sync_multiannual)
 ppt_ma_linear_model <- glmmTMB(avg_sync ~ scaled_year, data = avg_ppt_sync_multiannual)
 ppt_ma_quad_model <- glmmTMB(avg_sync ~ poly(scaled_year, 2, raw=TRUE), data = avg_ppt_sync_multiannual)
+
 ppt_ma_aic <- AIC(ppt_ma_null_model, ppt_ma_linear_model, ppt_ma_quad_model)
 # null model fit best
 
 # repeat for decadal band
 avg_ppt_sync_decadal <- avg_ppt_sync %>%
   filter(band == "decadal")
+
 ppt_d_null_model <- glmmTMB(avg_sync~1, data = avg_ppt_sync_decadal)
 ppt_d_linear_model <- glmmTMB(avg_sync ~ scaled_year, data = avg_ppt_sync_decadal)
 ppt_d_quad_model <- glmmTMB(avg_sync ~ poly(scaled_year, 2, raw=TRUE), data = avg_ppt_sync_decadal)
+
 ppt_d_aic <- AIC(ppt_d_null_model, ppt_d_linear_model, ppt_d_quad_model)
 # quadratic model fit best 
 
 # repeat for multidecadal band
 avg_ppt_sync_multidecadal <- avg_ppt_sync %>%
   filter(band == "multidecadal")
+
 ppt_md_null_model <- glmmTMB(avg_sync~1, data = avg_ppt_sync_multidecadal)
 ppt_md_linear_model <- glmmTMB(avg_sync ~ scaled_year, data = avg_ppt_sync_multidecadal)
 ppt_md_quad_model <- glmmTMB(avg_sync ~ poly(scaled_year, 2, raw=TRUE), data = avg_ppt_sync_multidecadal)
+
 ppt_md_aic <- AIC(ppt_md_null_model, ppt_md_linear_model, ppt_md_quad_model)
 # quadratic model fit best
 
 # predict precipitation synchrony using best fit models
-ppt_b_vis_prod <- ggpredict(ppt_b_linear_model, terms = c("scaled_year[all]"), type = "fe", ci_level = 0.95)
+ppt_b_vis_prod <- ggpredict(ppt_b_linear_model, terms = c("scaled_year[all]"), 
+                            type = "fixed", ci_level = 0.95)
 ppt_b_vis_prod$band <- "biennial"
 
 # null models can not be predicted using ggpredict, create predicted output from null model intercept
@@ -379,10 +394,12 @@ ppt_ma_vis_prod <- data.frame(
   band = "multiannual"
 )
 
-ppt_d_vis_prod <- ggpredict(ppt_d_quad_model, terms = c("scaled_year[all]"), type = "fe", ci_level = 0.95)
+ppt_d_vis_prod <- ggpredict(ppt_d_quad_model, terms = c("scaled_year[all]"), 
+                            type = "fixed", ci_level = 0.95)
 ppt_d_vis_prod$band <- "decadal"
 
-ppt_md_vis_prod <- ggpredict(ppt_md_quad_model, terms = c("scaled_year[all]"), type = "fe", ci_level = 0.95)
+ppt_md_vis_prod <- ggpredict(ppt_md_quad_model, terms = c("scaled_year[all]"), 
+                             type = "fixed", ci_level = 0.95)
 ppt_md_vis_prod$band <- "multidecadal"
 
 # bind all predicted outputs
@@ -442,6 +459,8 @@ avg_ppt_sync_plot <- ggplot() +
   ylab("Average Precipitation Synchrony") +
   xlab("Year")
 
+avg_ppt_sync_plot
+
 #### average temperature synchrony ####
 # extract wavelet modulus values for temperature synchrony, make timescales the column names
 tmin_sync_values <- as.data.frame(res_tmin_wmf$values)
@@ -484,7 +503,7 @@ tmin_band_coverage <- tmin_ts_coverage %>%
 
 # recombine and filter full dataset to only include those complete time-band combos
 tmin_sync_long <- tmin_sync_long %>%
-  select(year, band, ts, values) %>%
+  dplyr::select(year, band, ts, values) %>%
   unite("uID", year, band, remove = FALSE)
 tmin_filtered_timeseries <- tmin_sync_long %>%
   filter(uID %in% tmin_band_coverage$uID)
@@ -516,27 +535,33 @@ tmin_b_aic <- AIC(tmin_b_null_model, tmin_b_linear_model, tmin_b_quad_model)
 # repeat for multiannual band
 avg_tmin_sync_multiannual <- avg_tmin_sync %>%
   filter(band == "multiannual")
+
 tmin_ma_null_model <- glmmTMB(avg_sync~1, data = avg_tmin_sync_multiannual)
 tmin_ma_linear_model <- glmmTMB(avg_sync ~ scaled_year, data = avg_tmin_sync_multiannual)
 tmin_ma_quad_model <- glmmTMB(avg_sync ~ poly(scaled_year, 2, raw=TRUE), data = avg_tmin_sync_multiannual)
+
 tmin_ma_aic <- AIC(tmin_ma_null_model, tmin_ma_linear_model, tmin_ma_quad_model)
 # linear model fit best
 
 # repeat for decadal band
 avg_tmin_sync_decadal <- avg_tmin_sync %>%
   filter(band == "decadal")
+
 tmin_d_null_model <- glmmTMB(avg_sync~1, data = avg_tmin_sync_decadal)
 tmin_d_linear_model <- glmmTMB(avg_sync ~ scaled_year, data = avg_tmin_sync_decadal)
 tmin_d_quad_model <- glmmTMB(avg_sync ~ poly(scaled_year, 2, raw=TRUE), data = avg_tmin_sync_decadal)
+
 tmin_d_aic <- AIC(tmin_d_null_model, tmin_d_linear_model, tmin_d_quad_model)
 # quadratic model fit best 
 
 # repeat for multidecadal band
 avg_tmin_sync_multidecadal <- avg_tmin_sync %>%
   filter(band == "multidecadal")
+
 tmin_md_null_model <- glmmTMB(avg_sync~1, data = avg_tmin_sync_multidecadal)
 tmin_md_linear_model <- glmmTMB(avg_sync ~ scaled_year, data = avg_tmin_sync_multidecadal)
 tmin_md_quad_model <- glmmTMB(avg_sync ~ poly(scaled_year, 2, raw=TRUE), data = avg_tmin_sync_multidecadal)
+
 tmin_md_aic <- AIC(tmin_md_null_model, tmin_md_linear_model, tmin_md_quad_model)
 # quadratic model fit best
 
@@ -557,13 +582,16 @@ tmin_b_vis_prod <- data.frame(
   band = "biennial"
 )
 
-tmin_ma_vis_prod <- ggpredict(tmin_d_linear_model, terms = c("scaled_year[all]"), type = "fe", ci_level = 0.95)
+tmin_ma_vis_prod <- ggpredict(tmin_d_linear_model, terms = c("scaled_year[all]"), 
+                              type = "fixed", ci_level = 0.95)
 tmin_ma_vis_prod$band <- "multiannual"
 
-tmin_d_vis_prod <- ggpredict(tmin_d_quad_model, terms = c("scaled_year[all]"), type = "fe", ci_level = 0.95)
+tmin_d_vis_prod <- ggpredict(tmin_d_quad_model, terms = c("scaled_year[all]"), 
+                             type = "fixed", ci_level = 0.95)
 tmin_d_vis_prod$band <- "decadal"
 
-tmin_md_vis_prod <- ggpredict(tmin_md_quad_model, terms = c("scaled_year[all]"), type = "fe", ci_level = 0.95)
+tmin_md_vis_prod <- ggpredict(tmin_md_quad_model, terms = c("scaled_year[all]"), 
+                              type = "fixed", ci_level = 0.95)
 tmin_md_vis_prod$band <- "multidecadal"
 
 # bind all predicted outputs
@@ -620,6 +648,7 @@ avg_tmin_sync_plot <- ggplot() +
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
   ) +
-  ylab("Average temperature Synchrony") +
+  ylab("Average Temperature Synchrony") +
   xlab("Year")
 
+avg_tmin_sync_plot

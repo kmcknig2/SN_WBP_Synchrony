@@ -1,7 +1,7 @@
 ## In this script, we perform moving windows to quantify timescale-specific 
-## measures of growth, precipitation, and temperature. Window lengths were selected to 
-## correspond to the middle of each timescale band with the exception of the biennial band;
-## biennial = 3 year windows, multiannual = 7 year windows, decadal = 15 year windows, 
+## measures of growth, precipitation, and temperature. Window lengths were selected to
+## be biennial = 3  and then to correspond to the middle of each timescale band 
+## for the rest, with multiannual = 7 year windows, decadal = 15 year windows, 
 ## and multidecadal = 25 year windows.
 
 # source cleaned and subsetted datasets; avg_plot_growth, winter_ppt, summer_tmin 
@@ -19,7 +19,8 @@ for(i in start_year:end_year){
   window_start <- i - 1
   window_end <- i + 1
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   ppt_3 <- winter_ppt %>% 
@@ -42,7 +43,8 @@ for(i in start_year:end_year){
   window_start <- i - 3
   window_end <- i + 3
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   ppt_7 <- winter_ppt %>% 
@@ -65,7 +67,8 @@ for(i in start_year:end_year){
   window_start <- i - 7
   window_end <- i + 7
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   ppt_15 <- winter_ppt %>% 
@@ -88,7 +91,8 @@ for(i in start_year:end_year){
   window_start <- i - 12
   window_end <- i + 12
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   ppt_25 <- winter_ppt %>% 
@@ -118,7 +122,8 @@ for(i in start_year:end_year){
   window_start <- i - 1
   window_end <- i + 1
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   tmin_3 <- summer_tmin %>% 
@@ -141,7 +146,8 @@ for(i in start_year:end_year){
   window_start <- i - 3
   window_end <- i + 3
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   tmin_7 <- summer_tmin %>% 
@@ -164,7 +170,8 @@ for(i in start_year:end_year){
   window_start <- i - 7
   window_end <- i + 7
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   tmin_15 <- summer_tmin %>% 
@@ -187,7 +194,8 @@ for(i in start_year:end_year){
   window_start <- i - 12
   window_end <- i + 12
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   tmin_25 <- summer_tmin %>% 
@@ -218,7 +226,8 @@ for(i in start_year:end_year){
   window_start <- i - 1
   window_end <- i + 1
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   rwi_3 <- avg_plot_growth %>% 
@@ -240,7 +249,8 @@ for(i in start_year:end_year){
   window_start <- i - 3
   window_end <- i + 3
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   rwi_7 <- avg_plot_growth %>% 
@@ -262,7 +272,7 @@ for(i in start_year:end_year){
   window_start <- i - 7
   window_end <- i + 7
   select_years <- window_start:window_end
-  print(select_years)
+  # print(select_years)
   
   
   rwi_15 <- avg_plot_growth %>% 
@@ -284,7 +294,8 @@ for(i in start_year:end_year){
   window_start <- i - 12
   window_end <- i + 12
   select_years <- window_start:window_end
-  print(select_years)
+  
+  # print(select_years)
   
   
   rwi_25 <- avg_plot_growth %>% 

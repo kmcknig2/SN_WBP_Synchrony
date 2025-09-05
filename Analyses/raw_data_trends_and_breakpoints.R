@@ -3,6 +3,7 @@
 
 # load necessary packages
 library("segmented")
+library("patchwork")
 
 # source cleaned and subsetted datasets; avg_plot_growth_mx, winter_ppt_mx, summer_tmin_mx 
 source(here::here("Analyses/data_cleaning_and_subsetting.R"))
@@ -13,8 +14,8 @@ colnames(avg_plot_growth_wide) <- 1900:2018
 
 # pivot longer and calculate average growth across plots per year
 avg_rwi <- avg_plot_growth_wide %>%
-  pivot_longer(1:119, names_to = "year", values_to = "rwi")%>%
-  group_by(year)%>%
+  pivot_longer(1:119, names_to = "year", values_to = "rwi") %>%
+  group_by(year) %>%
   summarize(trend = mean(rwi))
 avg_rwi$plot <- "Trend"
 
@@ -49,8 +50,8 @@ colnames(winter_ppt_wide) <- 1900:2018
 
 # pivot longer and calculate average precipitation across plots per year
 winter_ppt_trend <- winter_ppt_wide %>%
-  pivot_longer(1:119, names_to = "wateryear", values_to = "ppt")%>%
-  group_by(wateryear)%>%
+  pivot_longer(1:119, names_to = "wateryear", values_to = "ppt") %>%
+  group_by(wateryear) %>%
   summarize(trend = mean(ppt))
 winter_ppt_trend$plot <- "Trend"
 
@@ -85,8 +86,8 @@ colnames(summer_tmin_wide) <- 1900:2018
 
 # pivot longer and calculate average temperature across plots per year
 summer_tmin_trend <- summer_tmin_wide %>%
-  pivot_longer(1:119, names_to = "year", values_to = "tmin")%>%
-  group_by(year)%>%
+  pivot_longer(1:119, names_to = "year", values_to = "tmin") %>%
+  group_by(year) %>%
   summarize(trend = mean(tmin))
 summer_tmin_trend$plot <- "Trend"
 
@@ -115,6 +116,8 @@ raw_tmin <- ggplot()+
   xlab("Year")+
   ylab("Summer Minimum Temperatures \n(Jun - Aug, C)")
 
+# plot the three graphs together
+raw_rwi + raw_ppt + raw_tmin
 
 #### breakpoints in growth ####
 # convert year to numeric
@@ -156,6 +159,7 @@ rwi.p <- rwi.p + geom_vline(xintercept = rwi.lines, linetype = "dashed", color =
   labs(y = "average annual growth")+
   theme_bw()
 
+rwi.p
 
 #### breakpoints in precipitation ####
 # convert wateryear to numeric
@@ -199,6 +203,8 @@ ppt.p <- ppt.p + geom_vline(xintercept = ppt.lines, linetype = "dashed", color =
   labs(y = "average annual precipitation")+
   theme_bw()
 
+ppt.p
+
 #### breakpoints in temperature ####
 # convert year to numeric
 summer_tmin_trend$year <- as.numeric(summer_tmin_trend$year)
@@ -240,3 +246,4 @@ tmin.p <- tmin.p + geom_vline(xintercept = tmin.lines, linetype = "dashed", colo
   labs(y = "average annual temperature")+
   theme_bw()
 
+tmin.p

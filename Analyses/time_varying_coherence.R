@@ -1,13 +1,12 @@
 ## In this script, we calculate wavelet coherence between growth and precipitation
 ## and between growth and temperature across our timeseries at each timescale band.
 
+library("wsyn")
 
 # source cleaned and subsetted datasets; avg_plot_growth_mx, winter_ppt_mx, summer_tmin_mx 
 source(here::here("Analyses/data_cleaning_and_subsetting.R"))
 # source coh_tv function, modified to test coherence in a time varying way
 source(here::here("Functions/coh_tv.R"))
-
-library("wsyn")
 
 # clean data for each variable using cleandat function with clev = 5 
 times = 1900:2018
