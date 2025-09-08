@@ -242,8 +242,11 @@ tmin.p <- tmin.p + geom_line(data = tmin.model, aes(x=year, y = trend), color = 
 tmin.lines <- tmin.seg$psi[,2]
 
 # add a vertical dashed line to the plot at the estimated breakpoint
-tmin.p <- tmin.p + geom_vline(xintercept = tmin.lines, linetype = "dashed", color = "darkgrey") +
+tmin.p <- tmin.p + geom_vline(xintercept = tmin.lines, linetype = "solid", color = "cornflowerblue") +
   labs(y = "average annual temperature")+
-  theme_bw()
+  theme_bw() 
 
 tmin.p
+
+# plot all three together
+rwi.p + ppt.p + tmin.p
