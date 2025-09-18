@@ -636,18 +636,17 @@ t.test_tmin_quant_rwi_sync_results  <- do.call(rbind, t.test_tmin_quant_rwi_sync
 # multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
 t.test_tmin_quant_rwi_sync_results$Mean_Difference <- t.test_tmin_quant_rwi_sync_results$Mean_Difference * -1
 
-
-#### temperature synchrony across temperature quantiles ####
+#### precipitation synchrony across precipitation quantiles ####
 # make sure quantile is a factor
-tmin_quant_tmin_sync$quantile <- factor(tmin_quant_tmin_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
+ppt_quant_ppt_sync$quantile <- factor(ppt_quant_ppt_sync$quantile, levels = c("4", "3", "2", "1"), ordered = TRUE)
 # create an empty list to store the results for each band
-t.test_tmin_quant_tmin_sync_results <- list()
+t.test_ppt_quant_ppt_sync_results <- list()
 
 # loop through each timescale band
-for (xx in 1:length(unique(tmin_quant_tmin_sync$band))) {
+for (xx in 1:length(unique(ppt_quant_ppt_sync$band))) {
   
-  current <- unique(tmin_quant_tmin_sync$band)[xx]
-  band_data <- tmin_quant_tmin_sync %>%
+  current <- unique(ppt_quant_ppt_sync$band)[xx]
+  band_data <- ppt_quant_ppt_sync %>%
     filter(band == current)
   
   # manually generate pairs in the desired order (1-2, 1-3, 1-4, etc.)
@@ -696,16 +695,15 @@ for (xx in 1:length(unique(tmin_quant_tmin_sync$band))) {
   band_results_df$Adjusted_P_Value <- p.adjust(band_results_df$P_Value, method = "bonferroni")
   
   # combine the band-specific results
-  t.test_tmin_quant_tmin_sync_results [[current]] <- band_results_df
+  t.test_ppt_quant_ppt_sync_results [[current]] <- band_results_df
 }
 
 # combine results for all bands into a data frame
-t.test_tmin_quant_tmin_sync_results  <- do.call(rbind, t.test_tmin_quant_tmin_sync_results) %>%
+t.test_ppt_quant_ppt_sync_results  <- do.call(rbind, t.test_ppt_quant_ppt_sync_results) %>%
   mutate(significant = case_when(Adjusted_P_Value <= corr_p_value ~ "yes", 
                                  Adjusted_P_Value > corr_p_value ~ "no"))
 # multiply the mean difference by -1 to correct the direction of change from smaller quartiles to larger quartiles
-t.test_tmin_quant_tmin_sync_results$Mean_Difference <- t.test_tmin_quant_tmin_sync_results$Mean_Difference * -1
-
+t.test_ppt_quant_ppt_sync_results$Mean_Difference <- t.test_ppt_quant_ppt_sync_results$Mean_Difference * -1
 
 #### temperature synchrony across precipitation quantiles ####
 # make sure quantile is a factor
