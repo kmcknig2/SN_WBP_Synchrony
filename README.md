@@ -44,6 +44,13 @@ See below for additional detail.
     
     *env_quantil_sync_cor.R* - script used to assess correlations between timescale-specific
     environmnetal quartiles and synchrony across variables.
+    
+    *SEMs.R* - script used to perform structural equation models to reveal pathways between
+    and temperature, precipitation, temperature synchrony, precipiation synchrony,
+    and growth synchrony. 
+     
+    *precipitation_sensitivity.R* - script used to model and predict growth patterns across
+    precipiation values at low, mean and high temperatures
 
 
 3.  **Functions**
