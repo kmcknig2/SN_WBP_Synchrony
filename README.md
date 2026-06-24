@@ -12,12 +12,12 @@ See below for additional detail.
 1.  **Data:**
 
     *rwi_dat.csv* - contains ring width index data for 27 whitebark pine populations
-    across the southern Sierra Nevada.
+    across the Sierra Nevada.
 
-    *ppt_dat.csv* - contains montly total precipiation data extracted from PRISM 
+    *ppt_dat.csv* - contains monthly total precipitation data extracted from PRISM 
     to match the same 27 populations from 1895-2018
 
-    *tmin_dat.csv* - contains montly minimum temperature data extracted from PRISM 
+    *tmin_dat.csv* - contains monthly minimum temperature data extracted from PRISM 
     to match the same 27 populations from 1895-2018
     
 
@@ -43,14 +43,14 @@ See below for additional detail.
     of the environmental and growth data.
     
     *env_quantil_sync_cor.R* - script used to assess correlations between timescale-specific
-    environmnetal quartiles and synchrony across variables.
+    environmental quartiles and synchrony across variables.
     
     *SEMs.R* - script used to perform structural equation models to reveal pathways between
-    and temperature, precipitation, temperature synchrony, precipiation synchrony,
+    temperature, precipitation, temperature synchrony, precipitation synchrony,
     and growth synchrony. 
      
     *precipitation_sensitivity.R* - script used to model and predict growth patterns across
-    precipiation values at low, mean and high temperatures
+    precipitation values at low, mean, and high temperatures
 
 
 3.  **Functions**
@@ -63,6 +63,6 @@ See below for additional detail.
     *plotmag_tts.R* - supporting script with modified wsyn function for plotting wmfs
     without fixed axes.
     
-    *psync_by_chance.R* - supporting script with function to calculate signficant synchrony 
+    *psync_by_chance.R* - supporting script with function to calculate significant synchrony 
     depending on number of sites. 
 
